@@ -15,7 +15,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
- * @ApiResource
+ * @ApiResource(
+ *     normalizationContext={"groups"={"users_read"}}
+ *)
  * @UniqueEntity("email", message="The given email address is already used by an existing user")
  */
 class User implements UserInterface
@@ -24,13 +26,13 @@ class User implements UserInterface
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"customers_read"})
+     * @Groups({"customers_read", "users_read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
-     * @Groups({"customers_read", "invoices_read"})
+     * @Groups({"customers_read", "invoices_read", "users_read"})
      * @Assert\NotBlank(message="The email address field should not be blank")
      * @Assert\Email(message="The given email address must be valid")
      */
@@ -50,7 +52,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"customers_read", "invoices_read"})
+     * @Groups({"customers_read", "invoices_read", "users_read"})
      * @Assert\NotBlank(message="The user firstName field should not be blank")
      * @Assert\Length(min="2", minMessage="The firstName must be between 2 and 255 characters", max="255", maxMessage="The firstName must be between 2 and 255 characters")
      */
@@ -58,7 +60,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"customers_read", "invoices_read"})
+     * @Groups({"customers_read", "invoices_read", "users_read"})
      * @Assert\NotBlank(message="The user lastName field should not be blank")
      * @Assert\Length(min="2", minMessage="The lastName must be between 2 and 255 characters", max="255", maxMessage="The lastName must be between 2 and 255 characters")
      */
