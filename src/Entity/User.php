@@ -2,14 +2,21 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @ApiResource
+ * @UniqueEntity("email", message="The given email address is already used by an existing user")
  */
 class User implements UserInterface
 {
@@ -17,11 +24,15 @@ class User implements UserInterface
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"customers_read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * @Groups({"customers_read", "invoices_read"})
+     * @Assert\NotBlank(message="The email address field should not be blank")
+     * @Assert\Email(message="The given email address must be valid")
      */
     private $email;
 
@@ -33,16 +44,23 @@ class User implements UserInterface
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
+     * @Assert\NotBlank(message="The password field should not be blank")
      */
     private $password;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"customers_read", "invoices_read"})
+     * @Assert\NotBlank(message="The user firstName field should not be blank")
+     * @Assert\Length(min="2", minMessage="The firstName must be between 2 and 255 characters", max="255", maxMessage="The firstName must be between 2 and 255 characters")
      */
     private $firstName;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"customers_read", "invoices_read"})
+     * @Assert\NotBlank(message="The user lastName field should not be blank")
+     * @Assert\Length(min="2", minMessage="The lastName must be between 2 and 255 characters", max="255", maxMessage="The lastName must be between 2 and 255 characters")
      */
     private $lastName;
 

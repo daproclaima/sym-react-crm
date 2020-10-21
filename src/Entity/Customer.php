@@ -2,56 +2,120 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiSubresource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Repository\CustomerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=CustomerRepository::class)
+ * @ApiResource(
+ *     collectionOperations={"GET", "POST"},
+ *     itemOperations={"GET", "PUT", "DELETE"},
+ *     subresourceOperations={
+ *          "invoices_get_subresource"={"path"="/customers/{id}/invoices"}
+ *     },
+ *     normalizationContext={
+ *          "groups"={"customers_read"}
+ *     }
+ * )
+ * in ApiResource, one can declare CRUD methods we want to enable
+ * on the Resource on collection and item operations, change the path
+ * (collectionOperations={"GET"={"path"="/clients"}, "POST"}, itemOperations={"GET"={"path"="/clients/{id}"}, "PUT", "DELETE"})
+ * For subresourceOperations, we define parameters about the subresource operations
+ * @ApiFilter(SearchFilter::class)
+ * @ApiFilter(OrderFilter::class)
  */
 class Customer
 {
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"customers_read", "invoices_read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"customers_read", "invoices_read"})
+     * @Assert\NotBlank(message="The user firstName field should not be blank")
+     * @Assert\Length(min="2", minMessage="The firstName must be between 2 and 255 characters", max="255", maxMessage="The firstName must be between 2 and 255 characters")
      */
     private $firstName;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"customers_read", "invoices_read"})
+     * @Assert\NotBlank(message="The user lastName field should not be blank")
+     * @Assert\Length(min="2", minMessage="The lastName must be between 2 and 255 characters", max="255", maxMessage="The lastName must be between 2 and 255 characters")
      */
     private $lastName;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"customers_read", "invoices_read"})
+     * @Assert\NotBlank(message="The email address field should not be blank")
+     * @Assert\Email(message="The given email address must be valid")
      */
     private $email;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"customers_read", "invoices_read"})
      */
     private $company;
 
     /**
      * @ORM\OneToMany(targetEntity=Invoice::class, mappedBy="customer")
+     * @Groups({"customers_read"})
+     * @ApiSubresource
      */
     private $invoices;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="customers")
+     * @Groups({"customers_read"})
+     * @Assert\NotBlank(message="The customer user field should not be blank")
      */
     private $user;
 
     public function __construct()
     {
         $this->invoices = new ArrayCollection();
+    }
+
+    /**
+     * Return the total invoices amount per user
+     * @return float
+     * @Groups({"customers_read"})
+     */
+    public function getTotalAmount(): float
+    {
+        return array_reduce($this->invoices->toArray(), function($total, $invoice) {
+            return $total + $invoice->getAmount();
+        }, 0);
+    }
+
+    /**
+     * Return the total invoices amount not yed paid (total amount out from paid or cancelled invoices) per user
+     * @return float
+     * @Groups({"customers_read"})
+     */
+    public function getUnpaidAmount(): float
+    {
+        return array_reduce($this->invoices->toArray(), function($total, $invoice) {
+            return $total + ($invoice->getStatus() === 'PAID' || $invoice->getStatus() === 'CANCELED' ? 0 :
+            $invoice->getAmount());
+        }, 0);
     }
 
     public function getId(): ?int
