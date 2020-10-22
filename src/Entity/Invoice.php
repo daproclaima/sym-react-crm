@@ -6,6 +6,7 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use App\Repository\InvoiceRepository;
+use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -18,7 +19,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *              "normalization_context"={"groups"={"invoices_subresource"}}
  *          }
  *     },
- *     itemOperations={"GET", "PUT", "DELETE",
+ *     itemOperations={"get", "put", "delete",
  *          "increment"={
  *              "method"="post",
  *              "path"="/invoices/{id}/increment",
@@ -30,7 +31,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *          }
  *     },
  *     attributes={
- *          "pagination_enabled"=true,
+ *          "pagination_enabled"=false,
  *          "pagination_items_per_page"=20,
  *          "order": {"sentAt ": "desc"}
  *     },
@@ -124,7 +125,7 @@ class Invoice
         return $this;
     }
 
-    public function getSentAt(): ?\DateTimeInterface
+    public function getSentAt(): ?DateTimeInterface
     {
         return $this->sentAt;
     }

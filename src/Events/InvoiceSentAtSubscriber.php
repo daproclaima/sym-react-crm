@@ -7,6 +7,7 @@ namespace App\Events;
 use ApiPlatform\Core\EventListener\EventPriorities;
 use App\Entity\Invoice;
 use App\Repository\InvoiceRepository;
+use DateTime;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -49,7 +50,7 @@ class InvoiceSentAtSubscriber implements EventSubscriberInterface
         $result = $event->getControllerResult();
         $method = $event->getRequest()->getMethod();
         if ($result instanceof Invoice && $method === "POST" && empty($result->getSentAt())) {
-            $result->setSentAt(new \DateTime());
+            $result->setSentAt(new DateTime());
         }
     }
 

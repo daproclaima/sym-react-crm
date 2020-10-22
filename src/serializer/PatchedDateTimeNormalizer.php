@@ -3,6 +3,11 @@
 
 namespace App\serializer;
 
+use DateTime;
+use DateTimeImmutable;
+use DateTimeInterface;
+use DateTimeZone;
+use Exception;
 use Symfony\Component\Serializer\Exception\InvalidArgumentException;
 use Symfony\Component\Serializer\Exception\NotNormalizableValueException;
 use Symfony\Component\Serializer\Normalizer\CacheableSupportsMethodInterface;
@@ -22,14 +27,14 @@ class PatchedDateTimeNormalizer implements NormalizerInterface, DenormalizerInte
     const TIMEZONE_KEY = 'datetime_timezone';
 
     private $defaultContext = [
-        self::FORMAT_KEY => \DateTime::RFC3339,
+        self::FORMAT_KEY => DateTime::RFC3339,
         self::TIMEZONE_KEY => null,
     ];
 
     private static $supportedTypes = [
-        \DateTimeInterface::class => true,
-        \DateTimeImmutable::class => true,
-        \DateTime::class => true,
+        DateTimeInterface::class => true,
+        DateTimeImmutable::class => true,
+        DateTime::class => true,
     ];
 
     public function __construct(array $defaultContext = [])
@@ -44,7 +49,7 @@ class PatchedDateTimeNormalizer implements NormalizerInterface, DenormalizerInte
      */
     public function normalize($object, string $format = null, array $context = [])
     {
-        if (!$object instanceof \DateTimeInterface) {
+        if (!$object instanceof DateTimeInterface) {
             throw new InvalidArgumentException('The object must implement the "\DateTimeInterface".');
         }
 
@@ -64,7 +69,7 @@ class PatchedDateTimeNormalizer implements NormalizerInterface, DenormalizerInte
      */
     public function supportsNormalization($data, string $format = null)
     {
-        return $data instanceof \DateTimeInterface;
+        return $data instanceof DateTimeInterface;
     }
 
     /**
@@ -82,20 +87,20 @@ class PatchedDateTimeNormalizer implements NormalizerInterface, DenormalizerInte
         }
 
         if (null !== $dateTimeFormat) {
-            $object = \DateTime::class === $type ? \DateTime::createFromFormat($dateTimeFormat, $data, $timezone) : \DateTimeImmutable::createFromFormat($dateTimeFormat, $data, $timezone);
+            $object = DateTime::class === $type ? DateTime::createFromFormat($dateTimeFormat, $data, $timezone) : DateTimeImmutable::createFromFormat($dateTimeFormat, $data, $timezone);
 
             if (false !== $object) {
                 return $object;
             }
 
-            $dateTimeErrors = \DateTime::class === $type ? \DateTime::getLastErrors() : \DateTimeImmutable::getLastErrors();
+            $dateTimeErrors = DateTime::class === $type ? DateTime::getLastErrors() : DateTimeImmutable::getLastErrors();
 
             throw new NotNormalizableValueException(sprintf('Parsing datetime string "%s" using format "%s" resulted in %d errors: ', $data, $dateTimeFormat, $dateTimeErrors['error_count']) . "\n" . implode("\n", $this->formatDateTimeErrors($dateTimeErrors['errors'])));
         }
 
         try {
-            return \DateTime::class === $type ? new \DateTime($data, $timezone) : new \DateTimeImmutable($data, $timezone);
-        } catch (\Exception $e) {
+            return DateTime::class === $type ? new DateTime($data, $timezone) : new DateTimeImmutable($data, $timezone);
+        } catch (Exception $e) {
             if ($context['disable_type_enforcement'] ?? false) {
                 return $data;
             }
@@ -135,7 +140,7 @@ class PatchedDateTimeNormalizer implements NormalizerInterface, DenormalizerInte
         return $formattedErrors;
     }
 
-    private function getTimezone(array $context): ?\DateTimeZone
+    private function getTimezone(array $context): ?DateTimeZone
     {
         $dateTimeZone = $context[self::TIMEZONE_KEY] ?? $this->defaultContext[self::TIMEZONE_KEY];
 
@@ -143,6 +148,6 @@ class PatchedDateTimeNormalizer implements NormalizerInterface, DenormalizerInte
             return null;
         }
 
-        return $dateTimeZone instanceof \DateTimeZone ? $dateTimeZone : new \DateTimeZone($dateTimeZone);
+        return $dateTimeZone instanceof DateTimeZone ? $dateTimeZone : new DateTimeZone($dateTimeZone);
     }
 }

@@ -17,8 +17,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass=CustomerRepository::class)
  * @ApiResource(
- *     collectionOperations={"GET", "POST"},
- *     itemOperations={"GET", "PUT", "DELETE"},
+ *     collectionOperations={"get", "post"},
+ *     itemOperations={"get", "put", "delete"},
  *     subresourceOperations={
  *          "invoices_get_subresource"={"path"="/customers/{id}/invoices"}
  *     },
@@ -28,7 +28,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  * )
  * in ApiResource, one can declare CRUD methods we want to enable
  * on the Resource on collection and item operations, change the path
- * (collectionOperations={"GET"={"path"="/clients"}, "POST"}, itemOperations={"GET"={"path"="/clients/{id}"}, "PUT", "DELETE"})
+ * (collectionOperations={"get"={"path"="/clients"}, "post"}, itemOperations={"get"={"path"="/clients/{id}"}, "put", "delete"})
+ * the http methods needs to be in lowercase
  * For subresourceOperations, we define parameters about the subresource operations
  * @ApiFilter(SearchFilter::class)
  * @ApiFilter(OrderFilter::class)
