@@ -15,11 +15,14 @@ import HomePage from "./js/pages/Homepage";
 import { HashRouter, Switch, Route, withRouter, Redirect } from 'react-router-dom';
 import CustomersPage from "./js/pages/CustomersPage";
 // import CustomersPageWithPagination from "./js/pages/CustomerPageWithPagination";
-import InvoicesPage from "./js/pages/ InvoicesPage";
+import InvoicesPage from "./js/pages/InvoicesPage";
 import LoginPage from "./js/pages/LoginPage";
 import AuthAPI from "./js/services/authAPI";
 import AuthContext from "./js/contexts/authContext";
 import PrivateRoute from "./js/components/PrivateRoute";
+import CustomerPage from "./js/pages/CustomerPage";
+import InvoicePage from "./js/pages/InvoicePage";
+import SignupPage from "./js/pages/SignupPage";
 
 
 // Need jQuery? Install it with "yarn add jquery", then uncomment to import it.
@@ -46,10 +49,13 @@ const App = () => {
                     <Switch>
                         {/* mind to put the most detailed route the highest in list */}
                         <Route path={"/login"} component={LoginPage} />
+                        <Route path={"/signup"} component={SignupPage} />
+                        <PrivateRoute path={"/customers/:id"} component={CustomerPage} />
                         <PrivateRoute path={"/customers"} component={CustomersPage} />
                         {/*<Route path={"/customers"} render={(props) => {*/}
                         {/*    return isAuthenticated && <CustomersPage {...props} /> || <Redirect to={"/login"} />*/}
                         {/*}}/> */}
+                        <PrivateRoute path={"/invoices/:id"} component={InvoicePage} />
                         <PrivateRoute path={"/invoices"} component={InvoicesPage} />
                         <Route path={"/"} component={HomePage}/>
                     </Switch>

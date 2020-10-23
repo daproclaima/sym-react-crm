@@ -48,30 +48,33 @@ class Customer
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"customers_read", "invoices_read"})
+     * @Assert\Length(min="2", minMessage="The first name must be between 2 and 255 characters", max="255", maxMessage="The first name must be between 2 and 255 characters")
      * @Assert\NotBlank(message="The user firstName field should not be blank")
-     * @Assert\Length(min="2", minMessage="The firstName must be between 2 and 255 characters", max="255", maxMessage="The firstName must be between 2 and 255 characters")
      */
     private $firstName;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"customers_read", "invoices_read"})
+     * @Assert\Length(min="2", minMessage="The last name must be between 2 and 255 characters", max="255", maxMessage="The last name must be between 2 and 255 characters")
      * @Assert\NotBlank(message="The user lastName field should not be blank")
-     * @Assert\Length(min="2", minMessage="The lastName must be between 2 and 255 characters", max="255", maxMessage="The lastName must be between 2 and 255 characters")
      */
     private $lastName;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"customers_read", "invoices_read"})
-     * @Assert\NotBlank(message="The email address field should not be blank")
      * @Assert\Email(message="The given email address must be valid")
+     * @Assert\Length(min="2", minMessage="The email address must be between 2 and 255 characters", max="255", maxMessage="The email address must be between 2 and 255 characters")
+     * @Assert\NotBlank(message="The email address field should not be blank")
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @Groups({"customers_read", "invoices_read"})
+     * @Assert\Length(max="255", maxMessage="The company name must be shorter than 255 characters", allowEmptyString = true)
+
      */
     private $company;
 

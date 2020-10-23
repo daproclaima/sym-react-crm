@@ -61,8 +61,8 @@ class Invoice
     /**
      * @ORM\Column(type="float")
      * @Groups({"invoices_read", "customers_read", "invoices_subresource"})
-     * @Assert\NotBlank(message="The invoice amount field should not be blank")
      * @Assert\Type(type="numeric", message="The invoice amount must be a number")
+     * @Assert\NotBlank(message="The invoice amount field should not be blank")
      */
     private $amount;
 
@@ -77,8 +77,8 @@ class Invoice
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"invoices_read", "customers_read", "invoices_subresource"})
+     * @Assert\Choice(choices={"SENT", "CANCELLED", "PAID"}, message="The invoice status must be either CANCELED, PAID or SENT")
      * @Assert\NotBlank(message="The invoice status field should not be blank")
-     * @Assert\Choice(choices={"SENT", "CANCELED", "PAID"}, message="The invoice status must be either CANCELED, PAID or SENT")
      */
     private $status;
 
@@ -93,8 +93,8 @@ class Invoice
     /**
      * @ORM\Column(type="integer")
      * @Groups({"invoices_read", "customers_read", "invoices_subresource"})
-     * @Assert\NotBlank(message="The invoice chrono field should not be blank")
      * @Assert\Type(type="integer", message="The given invoice chrono type should be an integer")
+     * @Assert\NotBlank(message="The invoice chrono field should not be blank")
      */
     private $chrono;
 
