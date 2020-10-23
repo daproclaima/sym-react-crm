@@ -40,18 +40,19 @@ class CurrentUserExtension implements QueryCollectionExtensionInterface, QueryIt
     private function addWhere(QueryBuilder $queryBuilder, string $resourceClass)
     {
         $user = $this->security->getUser();
+        
 
         if (
             ($resourceClass === Customer::class || $resourceClass === Invoice::class)
-            &&!
-            $this->auth->isGranted('ROLE_ADMIN')
+            &&
+            !$this->auth->isGranted('ROLE_ADMIN')
             &&
             $user instanceof User
         ) {
             $rootAlias = $queryBuilder->getRootAliases()[0];
             if ($resourceClass === Customer::class) {
                 $queryBuilder->andWhere("$rootAlias.user = :user");
-            } elseif( $resourceClass === Invoice::class) {
+            } else if( $resourceClass === Invoice::class) {
                 $queryBuilder->join("$rootAlias.customer", "c")
                     ->andWhere("c.user = :user");
             }
