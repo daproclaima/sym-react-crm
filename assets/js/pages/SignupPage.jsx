@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Field from "../components/forms/Field";
 import {Link} from "react-router-dom";
 import UsersAPI from "../services/usersAPI";
+import {toast} from "react-toastify";
 
 const SignupPage = ({ history }) => {
     const [ user, setUser ] = useState({
@@ -37,7 +38,7 @@ const SignupPage = ({ history }) => {
 
         try {
             await UsersAPI.create(user)
-            // todo flash success
+            toast.success('Congratulations! You signed up and can now sign in! ✅')
             setErrors({})
             history.replace('/login')
         } catch (error) {
@@ -47,7 +48,7 @@ const SignupPage = ({ history }) => {
                 violations.forEach(violation => apiErrors[violation.propertyPath] = violation.message)
                 setErrors(apiErrors)
             }
-            // todo flash error
+            toast.error('Sorry, your account signup failed due to errors in form. ❌')
         }
         console.log(user)
     }

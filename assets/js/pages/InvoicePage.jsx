@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 import CustomersAPI from "../services/customersAPI";
 import axios from 'axios';
 import InvoicesAPI from "../services/invoicesAPI";
+import { toast } from 'react-toastify';
+import FormContentLoader from "../components/loaders/FormContentLoader";
 
 const InvoicePage = ({ history, match }) => {
 
@@ -26,6 +28,8 @@ const InvoicePage = ({ history, match }) => {
         status: ''
     });
 
+    const [loading, setLoading] = useState(true);
+
     /**
      * Manage customers fetching from API to populate options in select for selection of customer field of an invoice
      * @returns {Promise<void>}
@@ -34,11 +38,12 @@ const InvoicePage = ({ history, match }) => {
         try {
             const data = await CustomersAPI.findAll()
             setCustomers(data);
+            setLoading(false)
             // todo backend https://symfony.com/doc/current/components/serializer.html#recursive-denormalization-and-type-safety
             if(!invoice.customer) setInvoice({ ...invoice, customer: data[0].id, amount: Number(invoice.amount) })
         }catch (e) {
             console.log(e.response)
-            // TODO error flash notification
+            toast.error('Error at customers loading. You will not find customers in form select fields. Contact the support ❌')
             history.replace('/invoices')
         }
     }
@@ -53,9 +58,10 @@ const InvoicePage = ({ history, match }) => {
             const { amount, status, customer } = await InvoicesAPI.find(id)
             // console.log(data)
             setInvoice({ amount, status, customer: customer.id })
+            setLoading(false)
         } catch (e) {
             console.log(response.error)
-            // TODO error flash notification
+            toast.error('Error at requested invoice loading ❌')
             history.replace('/invoices')
         }
     }
@@ -72,8 +78,11 @@ const InvoicePage = ({ history, match }) => {
      */
     useEffect(() => {
         if(id !== 'new' ){
+            setLoading(true)
             setEditing(true)
             fetchInvoice(id)
+            // todo: optimization with promise.all()
+            setLoading(false)
         }
     }, [id])
 
@@ -97,15 +106,14 @@ const InvoicePage = ({ history, match }) => {
         try {
             if(editing) {
                 await InvoicesAPI.update(id, invoice)
-            //    TODO: success flash notif
+                toast.success('Invoice edited ✅')
             } else{
                 await InvoicesAPI.create(invoice)
-
+                toast.success('Invoice created ✅')
                 history.replace('/invoices');
             }
-            // TODO: Flash notification success
             // console.log(response);
-            // setErrors({})
+            setErrors({})
 
         } catch ({ response }) {
             console.log(response)
@@ -121,22 +129,25 @@ const InvoicePage = ({ history, match }) => {
             }
             // console.log(apiErrors)
             setErrors(apiErrors)
-            // TODO: set flash error notif
+            toast.error('There is are errors in your invoice form ❌')
         }
     }
 
     return (
         <>
             { !editing && <h1>New invoice creation</h1> || <h1>Invoice edition</h1> }
-            <form onSubmit={handleSubmit}>
-                <Field name={'amount'} type={'number'} label={'Amount'} placeholder={'Invoice\'s amount' }
+            { loading &&
+                <FormContentLoader/>
+            ||
+                <form onSubmit={handleSubmit}>
+                <Field name={'amount'} type={'number'} label={'Amount'} placeholder={'Invoice\'s amount'}
                        value={invoice.amount} onChange={handleChange} error={errors.amount}
                 />
 
                 <Select name='customer' label={'customer'} value={invoice.customer}
                         error={errors.customer} onChange={handleChange}
                 >
-                    {customers.map( customer =>
+                    {customers.map(customer =>
                         <option key={customer.id} value={customer.id}>
                             {customer.firstName} {customer.lastName.toUpperCase()}
                         </option>
@@ -156,6 +167,7 @@ const InvoicePage = ({ history, match }) => {
                     <Link to={'/invoices'} className={'btn btn-link'}>Go back to invoices</Link>
                 </div>
             </form>
+            }
         </>
     );
 }

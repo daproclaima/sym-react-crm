@@ -7,6 +7,7 @@
 
 // any CSS you import will output into a single css file (app.css in this case)
 import './styles/app.css';
+import 'react-toastify/dist/ReactToastify.css';
 
 import React, { useState, useContext } from 'react';
 import ReactDOM from 'react-dom';
@@ -23,6 +24,7 @@ import PrivateRoute from "./js/components/PrivateRoute";
 import CustomerPage from "./js/pages/CustomerPage";
 import InvoicePage from "./js/pages/InvoicePage";
 import SignupPage from "./js/pages/SignupPage";
+import {toast, ToastContainer} from "react-toastify";
 
 
 // Need jQuery? Install it with "yarn add jquery", then uncomment to import it.
@@ -61,6 +63,7 @@ const App = () => {
                     </Switch>
                 </main>
             </HashRouter>
+            <ToastContainer position={toast.POSITION.TOP_CENTER} />
         </AuthContext.Provider>
     )
 };

@@ -2,20 +2,25 @@ import React, {useEffect, useState} from 'react';
 import Pagination from '../components/Pagination';
 import CustomersAPI from "../services/customersAPI";
 import {Link} from "react-router-dom";
+import {toast} from "react-toastify";
+import TableLoader from "../components/loaders/TableLoader";
 
 const CustomersPage = (props) => {
 
     const [customers, setCustomers] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [search, setSearch] = useState("")
+    const [ loading, setLoading ] = useState(true)
 
 // Managed wrapped async function in order to not write "useEffect( async () => fetchCustomers(), [])"
     const fetchCustomers = async () => {
         try {
             await CustomersAPI.findAll()
                 .then(data => setCustomers(data))
+            setLoading(false);
         }catch (error) {
-            console.log(error)
+            // console.log(error)
+            toast.error('Error at customers loading ❌')
         }
     }
     // Manage customers load at page loading
@@ -26,12 +31,14 @@ const CustomersPage = (props) => {
     // Manage one customer deletion
     const handleDelete = async (id) => {
         const originalCustomers = [...customers];
-        setCustomers(customers.filter(customer => customer.id !== id))
+        setCustomers(customers.filter(customer => customer.id !== id));
         try {
             await CustomersAPI.delete(id)
+            toast.success('Customer deleted ✅')
         }catch (error) {
             setCustomers(originalCustomers);
-            console.log(error)
+            // console.log(error)
+            toast.error('Error at customer deletion ❌')
         }
     }
 
@@ -93,30 +100,43 @@ const CustomersPage = (props) => {
                     <th>Company</th>
                     <th className={"text-center"}>Invoices</th>
                     <th className={"text-center"}>Total Amount</th>
-                    <th></th>
                 </tr>
                 </thead>
-                <tbody>
-                {paginatedCustomers.map(customer =>
-                    <tr key={customer.id}>
-                        <td>{customer.id}</td>
-                        <td><a href="#">{customer.firstName} {customer.lastName.toUpperCase()}</a></td>
-                        <td>{customer.email}</td>
-                        <td>{customer.company}</td>
-                        <td className={"text-center"}>{customer.invoices.length}</td>
-                        <td className={"text-center"}>{customer.totalAmount.toLocaleString()}€</td>
-                        <td>
-                            <button
-                                onClick={() => handleDelete(customer.id)}
-                                disabled={customer.invoices.length > 0}
-                                className="btn btn-sm btn-danger">
-                                Delete
-                            </button>
-                        </td>
-                    </tr>
-                )}
-                </tbody>
+                    <tbody>
+                        {!loading &&
+                            paginatedCustomers.map(customer =>
+                                <tr key={customer.id}>
+                                    <td>{customer.id}</td>
+
+                                    <td>
+                                        <Link to={`/customers/${customer.id}`}>
+                                            {customer.firstName} {customer.lastName.toUpperCase()}
+                                        </Link>
+                                    </td>
+                                    <td>{customer.email}</td>
+                                    <td>{customer.company}</td>
+                                    <td className={"text-center"}>{customer.invoices.length}</td>
+                                    <td className={"text-center"}>{customer.totalAmount.toLocaleString()}€</td>
+                                    <td>
+                                        <button
+                                            onClick={() => handleDelete(customer.id)}
+                                            disabled={customer.invoices.length > 0}
+                                            className="btn btn-sm btn-danger">
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            )
+                        ||
+                            <tr>
+                                <td>
+                                    <TableLoader/>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
             </table>
+
 
             {itemsPerPage < filteredCustomers.length && (
                 <Pagination
