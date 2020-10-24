@@ -30,6 +30,7 @@ const CustomersPage = (props) => {
 
     // Manage one customer deletion
     const handleDelete = async (id) => {
+        // todo: recalculate itemsPerPage. if it equals 0, set CurrentPage = CurrentPage -1
         const originalCustomers = [...customers];
         setCustomers(customers.filter(customer => customer.id !== id));
         try {

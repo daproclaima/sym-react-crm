@@ -4,7 +4,8 @@ import { Link } from "react-router-dom";
 import CustomersAPI from "../services/customersAPI";
 import { toast } from 'react-toastify';
 import FormContentLoader from "../components/loaders/FormContentLoader";
-
+//todo: wait for data loading to show the complete page.
+// otherwise we have a screen text change on h1 as the component does not know if we edit or create
 const CustomerPage = ({ match, history }) => {
     // console.log(props)
     const { id = 'new' } = match.params;
@@ -34,8 +35,16 @@ const CustomerPage = ({ match, history }) => {
             setCustomer({ firstName, lastName, email, company })
             setLoading(false )
         } catch (error) {
-            console.log(error.response)
-            toast.error('Error at user loading. ❌')
+            if(error.response) {
+                console.log(error.response)
+                toast.error('Error at user loading. ❌')
+            }
+            toast.error(
+                `Unhandled error. 
+                ${error}
+                (Contact the support.)
+                `
+            )
             history.replace('/customers');
         }
     }
@@ -58,7 +67,7 @@ const CustomerPage = ({ match, history }) => {
     // Manage form submission
     const handleSubmit = async (event) => {
         event.preventDefault();
-        console.log(customer)
+        // console.log(customer)
         try {
             if(editing) {
                 await CustomersAPI.update(id, customer);
@@ -71,19 +80,26 @@ const CustomerPage = ({ match, history }) => {
                 setErrors({})
                 history.replace('/customers');
             }
-        } catch ({response}) {
-            // console.log(error.response)
-            const apiErrors = {};
-            const { violations } = response.data;
-            console.log(violations)
-            if(violations){
-                violations.forEach(({ propertyPath, message }) => {
-                    apiErrors[propertyPath] = message;
-                });
+        } catch (error) {
+            if(error.response){
+                const apiErrors = {};
+                console.log(error.response)
+                const { violations } = error.response.data;
+                console.log(violations)
+                if(violations){
+                    violations.forEach(({ propertyPath, message }) => {
+                        apiErrors[propertyPath] = message;
+                    });
+                }
+                // console.log(apiErrors)
+                setErrors(apiErrors)
+                toast.error('Errors in user form ❌')
+            } else {
+                toast.error(
+                    `Unhandled error.
+                    ${error}
+                    Contact the support.`)
             }
-            // console.log(apiErrors)
-            setErrors(apiErrors)
-            toast.error('Errors in user form ❌')
         }
     }
 

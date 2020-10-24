@@ -1,5 +1,6 @@
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
+import {LOGIN_API} from "../config";
 // import customersAPI from "./customersAPI";
 
 // let token;
@@ -21,7 +22,7 @@ function logout() {
  */
 function authenticate(credentials) {
     return axios
-        .post(`http://localhost:8000/api/login_check`, credentials)
+        .post(LOGIN_API, credentials)
         .then(response => response.data.token)
         .then(token => {
             // document.cookie = `authToken = ${token}; HttpOnly`;
