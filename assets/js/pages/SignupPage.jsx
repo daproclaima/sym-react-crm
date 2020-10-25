@@ -48,8 +48,10 @@ const SignupPage = ({ history }) => {
             if(violations){
                 violations.forEach(violation => apiErrors[violation.propertyPath] = violation.message)
                 setErrors(apiErrors)
+                toast.error('Sorry, your account signup failed due to errors in form. ❌')
+            } else {
+                toast.error(`${error} Please, contact support `)
             }
-            toast.error('Sorry, your account signup failed due to errors in form. ❌')
         }
     }
 
