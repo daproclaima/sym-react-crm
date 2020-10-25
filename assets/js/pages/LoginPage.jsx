@@ -15,7 +15,7 @@ const LoginPage = ({ history }) => {
 
     // Manage fields
     const handleChange = ({ currentTarget }) => {
-        console.log(currentTarget)
+        // console.log(currentTarget)
         const { name, value } = currentTarget
         setCredentials({ ...credentials, [ name ]: value } );
     }

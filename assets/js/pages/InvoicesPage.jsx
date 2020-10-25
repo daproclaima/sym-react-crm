@@ -51,7 +51,7 @@ const InvoicesPage = (props) => {
             setInvoices(data);
             setLoading(false);
         } catch (error) {
-            console.log(error.response);
+            // console.log(error.response);
             toast.error('Error at invoices loading.')
         }
     }
@@ -84,7 +84,7 @@ const InvoicesPage = (props) => {
         }catch (error) {
             setInvoices(originalInvoices);
             toast.error('The invoice could not be deleted ❌')
-            console.log(error)
+            // console.log(error)
         }
     }
 

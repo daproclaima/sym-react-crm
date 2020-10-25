@@ -16,7 +16,7 @@ const CustomersPageWithPagination = (props) => {
                 setLoading(false)
             })
             .catch(error =>
-                console.log(error.response))
+                // console.log(error.response))
         ;
     }, [currentPage])
 
@@ -27,7 +27,7 @@ const CustomersPageWithPagination = (props) => {
             .then(response => console.log("delete ok"))
             .catch(error => {
                 setCustomers(originalCustomers);
-                console.log(error)
+                // console.log(error)
             })
     }
     const handlePageChange = (page) => {

@@ -41,7 +41,7 @@ const InvoicePage = ({ history, match }) => {
             // todo backend https://symfony.com/doc/current/components/serializer.html#recursive-denormalization-and-type-safety
             if(!invoice.customer) setInvoice({ ...invoice, customer: data[0].id, amount: Number(invoice.amount) })
         }catch (e) {
-            console.log(e.response)
+            // console.log(e.response)
             toast.error('Error at customers loading. You will not find customers in form select fields. Contact the support ❌')
             history.replace('/invoices')
         }
@@ -59,7 +59,7 @@ const InvoicePage = ({ history, match }) => {
             setInvoice({ amount, status, customer: customer.id })
             setLoading(false)
         } catch (e) {
-            console.log(response.error)
+            // console.log(response.error)
             toast.error('Error at requested invoice loading ❌')
             history.replace('/invoices')
         }
@@ -115,16 +115,14 @@ const InvoicePage = ({ history, match }) => {
             setErrors({})
 
         } catch ({ response }) {
-            console.log(response)
+            // console.log(response)
             const apiErrors = {};
             const { violations } = response.data;
-            console.log(violations)
+            // console.log(violations)
             if(violations){
                 violations.forEach(({ propertyPath, message }) => {
                     apiErrors[propertyPath] = message;
                 });
-            } else{
-                console.log(response.data)
             }
             // console.log(apiErrors)
             setErrors(apiErrors)

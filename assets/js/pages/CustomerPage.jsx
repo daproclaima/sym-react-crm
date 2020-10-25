@@ -36,7 +36,7 @@ const CustomerPage = ({ match, history }) => {
             setLoading(false )
         } catch (error) {
             if(error.response) {
-                console.log(error.response)
+                // console.log(error.response)
                 toast.error('Error at user loading. ❌')
             }
             toast.error(
@@ -83,9 +83,9 @@ const CustomerPage = ({ match, history }) => {
         } catch (error) {
             if(error.response){
                 const apiErrors = {};
-                console.log(error.response)
+                // console.log(error.response)
                 const { violations } = error.response.data;
-                console.log(violations)
+                // console.log(violations)
                 if(violations){
                     violations.forEach(({ propertyPath, message }) => {
                         apiErrors[propertyPath] = message;

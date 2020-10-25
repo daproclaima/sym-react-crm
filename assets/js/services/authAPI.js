@@ -71,7 +71,7 @@ function setup() {
         // console.log(jwtData.exp * 1000,  new Date().getTime())
         if (expiration * 1000 > new Date().getTime()) {
             setAxiosToken(token)
-            console.log( 'connection established with axios')
+            // console.log( 'connection established with axios')
         }
     }
 }

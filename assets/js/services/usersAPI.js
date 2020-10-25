@@ -8,9 +8,5 @@ function create(user){
     )
 }
 export default {
-    // findAll,
-    // delete: deleteInvoice,
-    // find,
-    // update,
     create
 }
