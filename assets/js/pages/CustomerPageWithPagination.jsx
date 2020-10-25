@@ -16,7 +16,7 @@ const CustomersPageWithPagination = (props) => {
                 setLoading(false)
             })
             .catch(error =>
-                // console.log(error.response))
+                console.log(error.response))
         ;
     }, [currentPage])
 
