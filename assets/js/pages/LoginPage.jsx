@@ -7,14 +7,15 @@ import {toast} from "react-toastify";
 const LoginPage = ({ history }) => {
     const { setIsAuthenticated } = useContext(AuthContext)
     const [ credentials, setCredentials ] = useState({
-        username: "test@sym.com",
-        password: "password"
+        username: "",
+        password: ""
     });
 
     const [error, setError ] = useState("")
 
     // Manage fields
     const handleChange = ({ currentTarget }) => {
+        console.log(currentTarget)
         const { name, value } = currentTarget
         setCredentials({ ...credentials, [ name ]: value } );
     }
@@ -40,7 +41,7 @@ const LoginPage = ({ history }) => {
             <h1>Log in application</h1>
 
             <form onSubmit={handleSubmit}>
-                <Field type={'email'} label={'Email address'} name={'userame'}
+                <Field type={'email'} label={'Email address'} name={'username'}
                        value={credentials.username} onChange={handleChange} error={error}
                />
                <Field type={'password'} label={'Password'} name={'password'}
