@@ -31,9 +31,11 @@ const SignupPage = ({ history }) => {
     // Manage submit form
     const handleSubmit = async event => {
         event.preventDefault();
-        let apiErrors = {}
+        const apiErrors = {}
         if(user.password !== user.passwordConfirm) {
             apiErrors.passwordConfirm = 'The password and confirmation password don\'t match.';
+            setErrors(apiErrors);
+            return;
         }
 
         try {
@@ -42,7 +44,6 @@ const SignupPage = ({ history }) => {
             setErrors({})
             history.replace('/login')
         } catch (error) {
-            console.log(error.response)
             const { violations } = error.response.data
             if(violations){
                 violations.forEach(violation => apiErrors[violation.propertyPath] = violation.message)
@@ -50,7 +51,6 @@ const SignupPage = ({ history }) => {
             }
             toast.error('Sorry, your account signup failed due to errors in form. ❌')
         }
-        console.log(user)
     }
 
     return (
