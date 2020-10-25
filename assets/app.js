@@ -13,7 +13,7 @@ import React, { useState, useContext } from 'react';
 import ReactDOM from 'react-dom';
 import { HashRouter, Switch, Route, withRouter, Redirect } from 'react-router-dom';
 import Navbar from "./js/components/Navbar";
-// import HomePage from "./js/pages/Homepage";
+import HomePage from "./js/pages/Homepage";
 import CustomersPage from "./js/pages/CustomersPage";
 // import CustomersPageWithPagination from "./js/pages/CustomerPageWithPagination";
 import InvoicesPage from "./js/pages/InvoicesPage";
