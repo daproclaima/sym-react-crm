@@ -59,7 +59,7 @@ const App = () => {
                         {/*}}/> */}
                         <PrivateRoute path={"/invoices/:id"} component={InvoicePage} />
                         <PrivateRoute path={"/invoices"} component={InvoicesPage} />
-                        <Route path={"/"} component={HomePage}/>
+                        <Route path={"/home"} component={HomePage}/>
                     </Switch>
                 </main>
             </HashRouter>
