@@ -4,7 +4,7 @@
     },
     "devDependencies": {
         "@babel/preset-react": "^7.12.1",
-        "@symfony/webpack-encore": "^0.31.0",
+        "@symfony/webpack-encore": "^4.1.1",
         "core-js": "^3.0.0",
         "regenerator-runtime": "^0.13.2",
         "webpack-notifier": "^1.6.0"
